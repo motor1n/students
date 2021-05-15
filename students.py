@@ -1,4 +1,4 @@
-"""Students 0.7.5"""
+"""Students 0.7.6"""
 
 import os
 import sys
@@ -16,9 +16,15 @@ from PyQt5.QtWidgets import (
 )
 
 
+# Глобальный спиcок студентов. Данные по каждому студенту считываются из файла XLS в словарь.
+# Одна строка таблицы - это один студент, данные по которому образуют один словарь.
+# В итоге получается список словарей.
+studs = list()
+
+
 class Students(QMainWindow):
     def __init__(self):
-        super().__init__()
+        super().__init__(None)
         # Загрузка интерфейса:
         uic.loadUi('students.ui', self)
 
@@ -46,7 +52,7 @@ class Students(QMainWindow):
     def open_xls(self):
         """Чтение файла XLS"""
         if self.fileopen:
-            msg = QMessageBox.information(
+            QMessageBox.information(
                 self,
                 'Инфо',
                 '<h4>Файл уже был открыт,<br>но можно выбрать другой.</h4>'
@@ -76,6 +82,13 @@ class Students(QMainWindow):
             for i in range(sh.nrows):
                 # Считываем строку из таблицы:
                 row = sh.row_values(i)
+                # Создаём временный словарь для студента
+                # и помещаем его в глобальный список studs:
+                tmp = {
+                    'surname': row[0],
+                    'name': row[1],
+                    'middlename': row[2]
+                }
                 # Объединяем ячейки Фамилия, Имя, Отчество
                 # в одну строку 'Фамилия Имя Отчество' для создания папки:
                 curr_student = ' '.join(row)
@@ -83,15 +96,17 @@ class Students(QMainWindow):
                 try:
                     os.makedirs(f'dir/{curr_student}')
                 except FileExistsError as error:
-                    msg = QMessageBox.information(self, 'Инфо',
-                                                  f'<h4>Студент:'
-                                                  f'<br>{curr_student}<br>'
-                                                  f'<br>Папка для этого студента уже имеется.</h4>')
+                    QMessageBox.information(
+                        self,
+                        'Инфо',
+                        f'<h4>Студент:<br>{curr_student}<br>'
+                        f'<br>Папка для этого студента уже имеется.</h4>'
+                    )
                 # Выводим фамилию, имя, отчество
                 # в таблицу "Список студентов" графического интерфейса:
                 for j in range(len(row)):
                     self.tw.setItem(i, j, QTableWidgetItem(row[j]))
-
+            print(studs)
             # Флаг: файл открыт
             self.fileopen = True
 
@@ -108,7 +123,7 @@ class Students(QMainWindow):
                 message = '<h4>Вы уже открыли файл</h4>'
             else:
                 message = '<h4>Вы не открыли файл,<br>попробуйте ещё раз.</h4>'
-            msg = QMessageBox.information(self, 'Инфо', message)
+            QMessageBox.information(self, 'Инфо', message)
             self.errorOpen = True
 
     def savedocx(self):
@@ -147,8 +162,11 @@ class Students(QMainWindow):
             self.dialog.setRange(0, 0)
             self.dialog.show()
         else:
-            msg = QMessageBox.warning(self, 'Внимание!',
-                                      '<h4>Вы не задали имя файла<br>для сохранения.</h4>')
+            QMessageBox.warning(
+                self,
+                'Внимание!',
+                '<h4>Вы не задали имя файла<br>для сохранения.</h4>'
+            )
 
         """
         if s == 'error':
