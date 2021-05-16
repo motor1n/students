@@ -369,10 +369,10 @@ p, li { white-space: pre-wrap; }
           <bool>false</bool>
          </property>
          <attribute name="horizontalHeaderMinimumSectionSize">
-          <number>180</number>
+          <number>30</number>
          </attribute>
          <attribute name="horizontalHeaderDefaultSectionSize">
-          <number>185</number>
+          <number>180</number>
          </attribute>
          <attribute name="verticalHeaderMinimumSectionSize">
           <number>30</number>
@@ -640,6 +640,36 @@ p, li { white-space: pre-wrap; }
          <column>
           <property name="text">
            <string>Группа</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Форма обучения</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Телефон</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>e-mail</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Часы</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Начало</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Конец</string>
           </property>
          </column>
         </widget>

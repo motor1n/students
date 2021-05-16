@@ -3,7 +3,6 @@
 import os
 import sys
 from datetime import datetime, timedelta
-
 import xlrd
 import subprocess
 from PyQt5 import uic
@@ -80,16 +79,29 @@ class Students(QMainWindow):
     def tpl_select(self):
         """Выбор типа шаблона"""
         if self.cb1.currentText() != '---':
+            # Если файл уже открыт,
+            # активируем кнопку сохранения:
+            if self.fileopen:
+                self.pb_save_docx.setDisabled(False)
+                msg = 'Сохраните файл в формате DOCX'
+                self.statusBar().showMessage(msg)
             # Задаём текущий тип шаблона:
             self.curr_tpl = self.cb1.currentText()
             # Задаём текущий файл шаблона:
             self.curr_file = tpl_file[self.curr_tpl]
             # Если тип шаблона выбран, активируем кнопку "Открыть файл XLS..."
             self.pb_open_xls.setDisabled(False)
-            msg = 'Откройте файл с исходными данными.'
+            if self.fileopen:
+                msg = 'Сохраните файл в формате DOCX'
+            else:
+                msg = 'Откройте файл с исходными данными'
             self.statusBar().showMessage(msg)
         else:
+            # Дезактивируем все кнопки:
             self.pb_open_xls.setDisabled(True)
+            self.pb_save_docx.setDisabled(True)
+            self.pb_save_pdf.setDisabled(True)
+            self.pb_send_email.setDisabled(True)
             msg = 'Выберите шаблон документа.'
             self.statusBar().showMessage(msg)
 
@@ -158,15 +170,18 @@ class Students(QMainWindow):
                     'date10': date_conv(row[23], workbook)
                 }
 
-                print(self.context)
+                # print(self.context)
 
                 # Помещаем словарь (данные по студенту) в глобальный список studs:
                 studs.append(self.context)
 
                 # Выводим фамилию, имя, отчество
                 # в таблицу "Список студентов" графического интерфейса:
-                for j in range(3):
+                for j in range(9):
                     self.tw.setItem(i - 2, j, QTableWidgetItem(row[j]))
+
+                # Автоподбор ширины столбцов:
+                self.tw.resizeColumnsToContents()
 
                 # Создаём папку для студента:
                 """
@@ -266,6 +281,7 @@ class Students(QMainWindow):
 
     def savepdf(self):
         """Сохранение PDF"""
+        # TODO: Сохранение PDF
         print('Сохранение PDF')
         """
         cmd = 'libreoffice --convert-to pdf --outdir'.split() + [outfolder] + [inputfile]
