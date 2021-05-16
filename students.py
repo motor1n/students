@@ -1,4 +1,4 @@
-"""Students 0.7.7"""
+"""Students 0.7.8"""
 
 import os
 import sys
@@ -177,7 +177,7 @@ class Students(QMainWindow):
 
                 # Выводим фамилию, имя, отчество
                 # в таблицу "Список студентов" графического интерфейса:
-                for j in range(9):
+                for j in range(5):
                     self.tw.setItem(i - 2, j, QTableWidgetItem(row[j]))
 
                 # Автоподбор ширины столбцов:

@@ -644,7 +644,7 @@ p, li { white-space: pre-wrap; }
          </column>
          <column>
           <property name="text">
-           <string>Форма обучения</string>
+           <string>Форма</string>
           </property>
          </column>
          <column>
