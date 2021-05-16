@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Students - список студентов</string>
+   <string>Students - шаблоны документов</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -22,7 +22,7 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0" rowspan="2" colspan="2">
+    <item row="0" column="0">
      <widget class="QWidget" name="widget" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -31,27 +31,6 @@
        </sizepolicy>
       </property>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="1">
-        <widget class="QLabel" name="label_02">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <family>Trebuchet MS</family>
-           <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Список студентов:</string>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="0">
         <widget class="QLabel" name="label_01">
          <property name="maximumSize">
@@ -73,10 +52,31 @@
          </property>
         </widget>
        </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_02">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <family>Trebuchet MS</family>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Список студентов:</string>
+         </property>
+        </widget>
+       </item>
        <item row="1" column="0">
         <widget class="QTextBrowser" name="tb">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -110,7 +110,138 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_03">
+         <property name="maximumSize">
+          <size>
+           <width>402</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Trebuchet MS</family>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Шаблон документа:</string>
+         </property>
+        </widget>
+       </item>
        <item row="3" column="0">
+        <widget class="QComboBox" name="cb1">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
+         <property name="insertPolicy">
+          <enum>QComboBox::InsertBeforeCurrent</enum>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <item>
+          <property name="text">
+           <string>---</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Заявление о направлении на практику</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Рабочий график (план) проведения практики</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Индивидуальное задание на практику</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Инструктаж по технике безопасности</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_04">
+         <property name="maximumSize">
+          <size>
+           <width>402</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Trebuchet MS</family>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Операции с документами:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QPushButton" name="pb_open_xls">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>400</width>
+           <height>48</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Открыть файл XLS...</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>pic/excel-icon.png</normaloff>pic/excel-icon.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
         <widget class="QPushButton" name="pb_save_docx">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -147,8 +278,8 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QPushButton" name="pb_open_xls">
+       <item row="7" column="0">
+        <widget class="QPushButton" name="pb_save_pdf">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -166,12 +297,15 @@ p, li { white-space: pre-wrap; }
            <pointsize>11</pointsize>
           </font>
          </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
          <property name="text">
-          <string>Открыть файл XLS...</string>
+          <string>Сохранить PDF...     </string>
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>pic/excel-icon.png</normaloff>pic/excel-icon.png</iconset>
+           <normaloff>pic/pdf-icon.png</normaloff>pic/pdf-icon.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -181,7 +315,44 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
-       <item row="1" column="1" rowspan="5">
+       <item row="8" column="0">
+        <widget class="QPushButton" name="pb_send_email">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>400</width>
+           <height>48</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Отправить E-MAIL...</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>pic/email-icon.png</normaloff>pic/email-icon.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" rowspan="8">
         <widget class="QTableWidget" name="tw">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -356,58 +527,121 @@ p, li { white-space: pre-wrap; }
            <string>30</string>
           </property>
          </row>
+         <row>
+          <property name="text">
+           <string>31</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>32</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>33</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>34</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>35</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>36</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>37</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>38</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>39</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>40</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>41</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>42</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>43</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>44</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>45</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>46</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>47</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>48</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>49</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>50</string>
+          </property>
+         </row>
          <column>
           <property name="text">
-           <string>Фамилия</string>
+           <string>ФИО</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Имя</string>
+           <string>Курс</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Отчество</string>
+           <string>Группа</string>
           </property>
          </column>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QPushButton" name="pb_save_pdf">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>400</width>
-           <height>48</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="text">
-          <string>Сохранить PDF...     </string>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>pic/pdf-icon.png</normaloff>pic/pdf-icon.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
         </widget>
        </item>
       </layout>
