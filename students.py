@@ -1,12 +1,12 @@
-"""Students 0.7.8"""
+"""Students 0.8.0"""
 
 import os
 import sys
 import xlrd
-import subprocess
+from PyQt5 import uic
 from datetime import datetime, timedelta
 from sendmail import SendLetter
-from PyQt5 import uic
+from savepdf import ToPDF
 from docxtpl import DocxTemplate
 from PyQt5.QtWidgets import (
     QMessageBox,
@@ -73,8 +73,8 @@ class Students(QMainWindow):
         self.pb_save_docx.clicked.connect(self.savedocx)
         # self.pb_save_docx.clicked.connect(lambda checked, data=self.context: self.savedocx(data))
 
-        # Сохранить файл PDF. Сигнал pb_save_pdf --> слот savepdf:
-        self.pb_save_pdf.clicked.connect(self.savepdf)
+        # Сохранить пакеты документов PDF. Сигнал pb_save_pdf --> слот savepacks:
+        self.pb_save_pdf.clicked.connect(self.savepacks)
 
         # Отправить письмо на почту. Сигнал pb_send_email --> слот sendingmail:
         self.pb_send_email.clicked.connect(self.sendingmail)
@@ -223,9 +223,9 @@ class Students(QMainWindow):
         """Сохранение DOCX"""
 
         # Окно диалога выбора папки для сохранения файлов:
-        dirlist = QFileDialog.getExistingDirectory(self, 'Выбрать папку', '.')
+        self.docdir = QFileDialog.getExistingDirectory(self, 'Выбрать папку', '.')
 
-        if dirlist != str():
+        if self.docdir != str():
             self.statusBar().showMessage('Идёт процесс формирование документов...')
             # Делаем кнопки неактивными:
             self.pb_open_xls.setDisabled(True)
@@ -233,14 +233,19 @@ class Students(QMainWindow):
 
             # Задаём папку для группы с названием шаблона:
             folder = f"{self.context['group']} - {self.curr_tpl}"
-            if not os.path.isdir(f'{dirlist}/{folder}'):
-                os.mkdir(f'{dirlist}/{folder}')
+            if not os.path.isdir(f'{self.docdir}/{folder}'):
+                os.mkdir(f'{self.docdir}/{folder}')
 
             # Создаём документы для всех студентов из списка:
             for s in studs:
+                # packdoc_dir = f"Группа {self.context['group']} - Пакеты документов на практику"
+                # pdf_dir = f"{self.docdir}/{packdoc_dir}/{s['student']}"
+                filedoc = f"{self.docdir}/{folder}/{s['student']} - {self.curr_tpl}.docx"
                 doc = DocxTemplate(f'tpl/{self.curr_file}')
                 doc.render(s)
-                doc.save(f"{dirlist}/{folder}/{s['student']} - {self.curr_tpl}.docx")
+                doc.save(filedoc)
+                # Конвертируем файл DOCX в PDF:
+                # ToPDF(pdf_dir).doc2pdf(filedoc)
 
             if not self.save_error:
                 # Выводим информационное сообщение:
@@ -285,27 +290,22 @@ class Students(QMainWindow):
         self.dialog.close()       
         """
 
-    @staticmethod
-    def savepdf():
-        """Сохранение PDF"""
-        # TODO: Сохранение PDF
-        print('Сохранение PDF')
-        """
-        cmd = 'libreoffice --convert-to pdf --outdir'.split() + [outfolder] + [inputfile]
-        p = subprocess.Popen(cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-        p.wait(timeout=10)
-        stdout, stderr = p.communicate()
-        if stderr:
-            raise subprocess.SubprocessError(stderr)
-        """
+    def savepacks(self):
+        """Сохранение пакетов документов"""
+        for s in studs:
+            packdoc_dir = f"Группа {self.context['group']} - Пакеты документов на практику"
+            pdf_dir = f"{self.docdir}/{packdoc_dir}/{s['student']}"
+            # filedoc = f"{self.docdir}/{folder}/{s['student']} - {self.curr_tpl}.docx"
+            # Конвертируем файл DOCX в PDF:
+            # ToPDF(pdf_dir).doc2pdf(filedoc)
 
     @staticmethod
     def sendingmail():
-        """Отправка письма"""
+        """Отправка писем"""
         for i in studs:
             print(i['mail'])
             # SendLetter(i['mail'], i['student'], 'students.xls')
-        # Передача параметров классу Send_letter, который генерирует и отправляет письма
+        # Передача параметров классу SendLetter, который генерирует и отправляет письма
         # SendLetter('chmferks@gmail.com', 'student fio', 'students.xls')
 
 

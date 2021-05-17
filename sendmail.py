@@ -41,11 +41,9 @@ class SendLetter:
             'attachment; filename="{}"; size={}'.format(self.basename, self.filesize)
         )
         encoders.encode_base64(self.part_file)
-
         self.msg.attach(self.part_text)
         self.msg.attach(self.part_html)
         self.msg.attach(self.part_file)
-
         self.send_msg()
 
     def send_msg(self):
