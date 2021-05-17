@@ -2,9 +2,10 @@
 
 import os
 import sys
-from datetime import datetime, timedelta
 import xlrd
 import subprocess
+from datetime import datetime, timedelta
+from sendmail import SendLetter
 from PyQt5 import uic
 from docxtpl import DocxTemplate
 from PyQt5.QtWidgets import (
@@ -74,6 +75,10 @@ class Students(QMainWindow):
 
         # Сохранить файл PDF. Сигнал pb_save_pdf --> слот savepdf:
         self.pb_save_pdf.clicked.connect(self.savepdf)
+
+        # Отправить письмо на почту. Сигнал pb_send_email --> слот sendingmail:
+        self.pb_send_email.clicked.connect(self.sendingmail)
+
         self.statusBar().showMessage('Изучите инструкцию и приступайте к работе')
 
     def tpl_select(self):
@@ -247,6 +252,7 @@ class Students(QMainWindow):
             self.pb_open_xls.setDisabled(False)
             self.pb_save_docx.setDisabled(False)
             self.pb_save_pdf.setDisabled(False)
+            self.pb_send_email.setDisabled(False)
         else:
             QMessageBox.warning(
                 self,
@@ -279,7 +285,8 @@ class Students(QMainWindow):
         self.dialog.close()       
         """
 
-    def savepdf(self):
+    @staticmethod
+    def savepdf():
         """Сохранение PDF"""
         # TODO: Сохранение PDF
         print('Сохранение PDF')
@@ -291,6 +298,15 @@ class Students(QMainWindow):
         if stderr:
             raise subprocess.SubprocessError(stderr)
         """
+
+    @staticmethod
+    def sendingmail():
+        """Отправка письма"""
+        for i in studs:
+            print(i['mail'])
+            # SendLetter(i['mail'], i['student'], 'students.xls')
+        # Передача параметров классу Send_letter, который генерирует и отправляет письма
+        # SendLetter('chmferks@gmail.com', 'student fio', 'students.xls')
 
 
 def date_conv(xldate, book):
