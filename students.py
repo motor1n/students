@@ -50,11 +50,14 @@ class Students(QMainWindow):
         # Изначально пустой словарь для рендеринга:
         self.context = dict()
 
-        # Изначально текущий тип шаблона не выбран:
-        self.curr_tpl = '---'
+        # Изначально множество выбранных названий шаблонов пустое:
+        self.curr_tpls = set()
 
-        # Изначально текущий файл шаблона не определён:
-        self.curr_file = str()
+        # Изначально множество выбранных файлов шаблонов пустое:
+        self.curr_files = set()
+
+        # Папка сохранения данных:
+        self.docdir = str()
 
         # Кнопки pb_save_docx и pb_save_pdf дезактивированы,
         # поскольку на данный момент ещё ничего не сделано:
@@ -63,8 +66,8 @@ class Students(QMainWindow):
         self.pb_save_pdf.setDisabled(True)
         self.pb_send_email.setDisabled(True)
 
-        # Сигнал отслеживания изменения QComboBox при выборе типа шаблона:
-        self.cb1.currentTextChanged.connect(self.tpl_select)
+        # Группа Сигнал отслеживания изменения CheckBox при выборе типа шаблона:
+        self.bg.buttonClicked.connect(self.tpl_select)
 
         # Открыть файл XLS. Сигнал pb_open_xls --> слот open_xls:
         self.pb_open_xls.clicked.connect(self.open_xls)
@@ -81,19 +84,20 @@ class Students(QMainWindow):
 
         self.statusBar().showMessage('Изучите инструкцию и приступайте к работе')
 
-    def tpl_select(self):
-        """Выбор типа шаблона"""
-        if self.cb1.currentText() != '---':
+    def tpl_select(self, checkbox):
+        """Выбор шаблонов"""
+        # Если хотя бы один чекбокс активирован:
+        if any([cb.isChecked() for cb in self.bg.buttons()]):
             # Если файл уже открыт,
             # активируем кнопку сохранения:
             if self.fileopen:
                 self.pb_save_docx.setDisabled(False)
                 msg = 'Сохраните файл в формате DOCX'
                 self.statusBar().showMessage(msg)
-            # Задаём текущий тип шаблона:
-            self.curr_tpl = self.cb1.currentText()
-            # Задаём текущий файл шаблона:
-            self.curr_file = tpl_file[self.curr_tpl]
+            # Выбираем отмеченные шаблоны:
+            self.curr_tpls = {cb.text() for cb in self.bg.buttons() if cb.isChecked()}
+            # Задаём текущие файлы шаблонов:
+            self.curr_files = {tpl_file[tpl] for tpl in self.curr_tpls}
             # Если тип шаблона выбран, активируем кнопку "Открыть файл XLS..."
             self.pb_open_xls.setDisabled(False)
             if self.fileopen:
@@ -175,8 +179,6 @@ class Students(QMainWindow):
                     'date10': date_conv(row[23], workbook)
                 }
 
-                # print(self.context)
-
                 # Помещаем словарь (данные по студенту) в глобальный список studs:
                 studs.append(self.context)
 
@@ -231,21 +233,26 @@ class Students(QMainWindow):
             self.pb_open_xls.setDisabled(True)
             self.pb_save_docx.setDisabled(True)
 
-            # Задаём папку для группы с названием шаблона:
-            folder = f"{self.context['group']} - {self.curr_tpl}"
-            if not os.path.isdir(f'{self.docdir}/{folder}'):
-                os.mkdir(f'{self.docdir}/{folder}')
+            # Выбираем отмеченные шаблоны:
+            self.curr_tpls = {cb.text() for cb in self.bg.buttons() if cb.isChecked()}
+            # Задаём текущие файлы шаблонов:
+            self.curr_files = {tpl_file[tpl] for tpl in self.curr_tpls}
 
-            # Создаём документы для всех студентов из списка:
-            for s in studs:
-                # packdoc_dir = f"Группа {self.context['group']} - Пакеты документов на практику"
-                # pdf_dir = f"{self.docdir}/{packdoc_dir}/{s['student']}"
-                filedoc = f"{self.docdir}/{folder}/{s['student']} - {self.curr_tpl}.docx"
-                doc = DocxTemplate(f'tpl/{self.curr_file}')
-                doc.render(s)
-                doc.save(filedoc)
-                # Конвертируем файл DOCX в PDF:
-                # ToPDF(pdf_dir).doc2pdf(filedoc)
+            for curr_tpl in self.curr_tpls:
+                # Задаём папку для группы с названием шаблона:
+                folder = f"{self.context['group']} - {curr_tpl}"
+                if not os.path.isdir(f'{self.docdir}/{folder}'):
+                    os.mkdir(f'{self.docdir}/{folder}')
+                # Создаём документы для всех студентов из списка:
+                for s in studs:
+                    # packdoc_dir = f"Группа {self.context['group']} - Пакеты документов на практику"
+                    # pdf_dir = f"{self.docdir}/{packdoc_dir}/{s['student']}"
+                    filedoc = f"{self.docdir}/{folder}/{s['student']} - {curr_tpl}.docx"
+                    doc = DocxTemplate(f'tpl/{tpl_file[curr_tpl]}')
+                    doc.render(s)
+                    doc.save(filedoc)
+                    # Конвертируем файл DOCX в PDF:
+                    # ToPDF(pdf_dir).doc2pdf(filedoc)
 
             if not self.save_error:
                 # Выводим информационное сообщение:
