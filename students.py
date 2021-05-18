@@ -56,8 +56,14 @@ class Students(QMainWindow):
         # Изначально множество выбранных файлов шаблонов пустое:
         self.curr_files = set()
 
-        # Папка сохранения данных:
+        # Папка сохранения документов DOCX:
         self.docdir = str()
+
+        # Папка сохранения документов PDF:
+        self.pdfdir = str()
+
+        # Словарь путей сохранённых документов пользователей:
+        self.docpaths = dict()
 
         # Кнопки pb_save_docx и pb_save_pdf дезактивированы,
         # поскольку на данный момент ещё ничего не сделано:
@@ -243,16 +249,23 @@ class Students(QMainWindow):
                 folder = f"{self.context['group']} - {curr_tpl}"
                 if not os.path.isdir(f'{self.docdir}/{folder}'):
                     os.mkdir(f'{self.docdir}/{folder}')
-                # Создаём документы для всех студентов из списка:
+                print('============================')
+                # Создаём документы для всех студентов группы:
                 for s in studs:
-                    # packdoc_dir = f"Группа {self.context['group']} - Пакеты документов на практику"
-                    # pdf_dir = f"{self.docdir}/{packdoc_dir}/{s['student']}"
                     filedoc = f"{self.docdir}/{folder}/{s['student']} - {curr_tpl}.docx"
+                    print(filedoc)
+
+                    if s['student'] in self.docpaths:
+                        self.docpaths[s['student']] = self.docpaths[s['student']] + [filedoc]
+                    else:
+                        self.docpaths[s['student']] = [filedoc]
+
                     doc = DocxTemplate(f'tpl/{tpl_file[curr_tpl]}')
                     doc.render(s)
                     doc.save(filedoc)
-                    # Конвертируем файл DOCX в PDF:
-                    # ToPDF(pdf_dir).doc2pdf(filedoc)
+
+                #
+                print(self.docpaths)
 
             if not self.save_error:
                 # Выводим информационное сообщение:
@@ -299,9 +312,17 @@ class Students(QMainWindow):
 
     def savepacks(self):
         """Сохранение пакетов документов"""
+
+        # Окно диалога выбора папки для сохранения файлов:
+        self.pdfdir = QFileDialog.getExistingDirectory(self, 'Выбрать папку', '.')
+
         for s in studs:
             packdoc_dir = f"Группа {self.context['group']} - Пакеты документов на практику"
-            pdf_dir = f"{self.docdir}/{packdoc_dir}/{s['student']}"
+            packs_dir = f"{self.pdfdir}/{packdoc_dir}/{s['student']}"
+
+        for key, value in self.docpaths.items():
+            print(s)
+
             # filedoc = f"{self.docdir}/{folder}/{s['student']} - {self.curr_tpl}.docx"
             # Конвертируем файл DOCX в PDF:
             # ToPDF(pdf_dir).doc2pdf(filedoc)
