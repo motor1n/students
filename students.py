@@ -1,4 +1,4 @@
-"""Students 0.8.0"""
+"""Students 0.8.1"""
 
 import os
 import sys
@@ -311,7 +311,7 @@ class Students(QMainWindow):
         """
 
     def savepacks(self):
-        """Сохранение пакетов документов"""
+        """Сохранение пакетов PDF-документов"""
 
         # Окно диалога выбора папки для сохранения файлов:
         self.pdfdir = QFileDialog.getExistingDirectory(self, 'Выбрать папку', '.')
@@ -321,7 +321,7 @@ class Students(QMainWindow):
             packs_dir = f"{self.pdfdir}/{packdoc_dir}/{s['student']}"
 
         for key, value in self.docpaths.items():
-            print(s)
+            print(key, value)
 
             # filedoc = f"{self.docdir}/{folder}/{s['student']} - {self.curr_tpl}.docx"
             # Конвертируем файл DOCX в PDF:
