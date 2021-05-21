@@ -1,14 +1,12 @@
-"""Students 0.7.7"""
-
+"""Students 0.8.0"""
+import glob
 import os
 import sys
-from datetime import datetime, timedelta
-
-from sendmail import Send_letter
-
 import xlrd
-import subprocess
 from PyQt5 import uic
+from datetime import datetime, timedelta
+from sendmail import SendLetter
+from savepdf import ToPDF
 from docxtpl import DocxTemplate
 from PyQt5.QtWidgets import (
     QMessageBox,
@@ -52,11 +50,14 @@ class Students(QMainWindow):
         # Изначально пустой словарь для рендеринга:
         self.context = dict()
 
-        # Изначально текущий тип шаблона не выбран:
-        self.curr_tpl = '---'
+        # Изначально множество выбранных названий шаблонов пустое:
+        self.curr_tpls = set()
 
-        # Изначально текущий файл шаблона не определён:
-        self.curr_file = str()
+        # Изначально множество выбранных файлов шаблонов пустое:
+        self.curr_files = set()
+
+        # Папка сохранения данных:
+        self.docdir = str()
 
         # Кнопки pb_save_docx и pb_save_pdf дезактивированы,
         # поскольку на данный момент ещё ничего не сделано:
@@ -65,8 +66,8 @@ class Students(QMainWindow):
         self.pb_save_pdf.setDisabled(True)
         self.pb_send_email.setDisabled(True)
 
-        # Сигнал отслеживания изменения QComboBox при выборе типа шаблона:
-        self.cb1.currentTextChanged.connect(self.tpl_select)
+        # Группа Сигнал отслеживания изменения CheckBox при выборе типа шаблона:
+        self.bg.buttonClicked.connect(self.tpl_select)
 
         # Открыть файл XLS. Сигнал pb_open_xls --> слот open_xls:
         self.pb_open_xls.clicked.connect(self.open_xls)
@@ -75,27 +76,41 @@ class Students(QMainWindow):
         self.pb_save_docx.clicked.connect(self.savedocx)
         # self.pb_save_docx.clicked.connect(lambda checked, data=self.context: self.savedocx(data))
 
-        # Сохранить файл PDF. Сигнал pb_save_pdf --> слот savepdf:
-        self.pb_save_pdf.clicked.connect(self.savepdf)
+        # Сохранить пакеты документов PDF. Сигнал pb_save_pdf --> слот savepacks:
+        self.pb_save_pdf.clicked.connect(self.savepacks)
 
         # Отправить письмо на почту. Сигнал pb_send_email --> слот sendingmail:
         self.pb_send_email.clicked.connect(self.sendingmail)
 
         self.statusBar().showMessage('Изучите инструкцию и приступайте к работе')
 
-    def tpl_select(self):
-        """Выбор типа шаблона"""
-        if self.cb1.currentText() != '---':
-            # Задаём текущий тип шаблона:
-            self.curr_tpl = self.cb1.currentText()
-            # Задаём текущий файл шаблона:
-            self.curr_file = tpl_file[self.curr_tpl]
+    def tpl_select(self, checkbox):
+        """Выбор шаблонов"""
+        # Если хотя бы один чекбокс активирован:
+        if any([cb.isChecked() for cb in self.bg.buttons()]):
+            # Если файл уже открыт,
+            # активируем кнопку сохранения:
+            if self.fileopen:
+                self.pb_save_docx.setDisabled(False)
+                msg = 'Сохраните файл в формате DOCX'
+                self.statusBar().showMessage(msg)
+            # Выбираем отмеченные шаблоны:
+            self.curr_tpls = {cb.text() for cb in self.bg.buttons() if cb.isChecked()}
+            # Задаём текущие файлы шаблонов:
+            self.curr_files = {tpl_file[tpl] for tpl in self.curr_tpls}
             # Если тип шаблона выбран, активируем кнопку "Открыть файл XLS..."
             self.pb_open_xls.setDisabled(False)
-            msg = 'Откройте файл с исходными данными.'
+            if self.fileopen:
+                msg = 'Сохраните файл в формате DOCX'
+            else:
+                msg = 'Откройте файл с исходными данными'
             self.statusBar().showMessage(msg)
         else:
+            # Дезактивируем все кнопки:
             self.pb_open_xls.setDisabled(True)
+            self.pb_save_docx.setDisabled(True)
+            self.pb_save_pdf.setDisabled(True)
+            self.pb_send_email.setDisabled(True)
             msg = 'Выберите шаблон документа.'
             self.statusBar().showMessage(msg)
 
@@ -164,15 +179,16 @@ class Students(QMainWindow):
                     'date10': date_conv(row[23], workbook)
                 }
 
-                print(self.context)
-
                 # Помещаем словарь (данные по студенту) в глобальный список studs:
                 studs.append(self.context)
 
                 # Выводим фамилию, имя, отчество
                 # в таблицу "Список студентов" графического интерфейса:
-                for j in range(3):
+                for j in range(5):
                     self.tw.setItem(i - 2, j, QTableWidgetItem(row[j]))
+
+                # Автоподбор ширины столбцов:
+                self.tw.resizeColumnsToContents()
 
                 # Создаём папку для студента:
                 """
@@ -205,36 +221,38 @@ class Students(QMainWindow):
             QMessageBox.information(self, 'Инфо', message)
             self.errorOpen = True
 
-    def sendingmail(self):
-        """Отправка письма"""
-        for i in studs:
-            print(i['mail'])
-            #Send_letter(i['mail'], i['student'], 'students.xls')
-        # Передача параметров классу Send_letter, который генерирует и отправляет письма
-        #Send_letter('chmferks@gmail.com', 'student fio', 'students.xls')
-
     def savedocx(self):
         """Сохранение DOCX"""
 
         # Окно диалога выбора папки для сохранения файлов:
-        dirlist = QFileDialog.getExistingDirectory(self, 'Выбрать папку', '.')
+        self.docdir = QFileDialog.getExistingDirectory(self, 'Выбрать папку', '.')
 
-        if dirlist != str():
+        if self.docdir != str():
             self.statusBar().showMessage('Идёт процесс формирование документов...')
             # Делаем кнопки неактивными:
             self.pb_open_xls.setDisabled(True)
             self.pb_save_docx.setDisabled(True)
 
-            # Задаём папку для группы с названием шаблона:
-            folder = f"{self.context['group']} - {self.curr_tpl}"
-            if not os.path.isdir(f'{dirlist}/{folder}'):
-                os.mkdir(f'{dirlist}/{folder}')
+            # Выбираем отмеченные шаблоны:
+            self.curr_tpls = {cb.text() for cb in self.bg.buttons() if cb.isChecked()}
+            # Задаём текущие файлы шаблонов:
+            self.curr_files = {tpl_file[tpl] for tpl in self.curr_tpls}
 
-            # Создаём документы для всех студентов из списка:
-            for s in studs:
-                doc = DocxTemplate(f'tpl/{self.curr_file}')
-                doc.render(s)
-                doc.save(f"{dirlist}/{folder}/{s['student']} - {self.curr_tpl}.docx")
+            for curr_tpl in self.curr_tpls:
+                # Задаём папку для группы с названием шаблона:
+                folder = f"{self.context['group']} - {curr_tpl}"
+                if not os.path.isdir(f'{self.docdir}/{folder}'):
+                    os.mkdir(f'{self.docdir}/{folder}')
+                # Создаём документы для всех студентов из списка:
+                for s in studs:
+                    # packdoc_dir = f"Группа {self.context['group']} - Пакеты документов на практику"
+                    # pdf_dir = f"{self.docdir}/{packdoc_dir}/{s['student']}"
+                    filedoc = f"{self.docdir}/{folder}/{s['student']} - {curr_tpl}.docx"
+                    doc = DocxTemplate(f'tpl/{tpl_file[curr_tpl]}')
+                    doc.render(s)
+                    doc.save(filedoc)
+                    # Конвертируем файл DOCX в PDF:
+                    # ToPDF(pdf_dir).doc2pdf(filedoc)
 
             if not self.save_error:
                 # Выводим информационное сообщение:
@@ -246,9 +264,7 @@ class Students(QMainWindow):
             self.pb_open_xls.setDisabled(False)
             self.pb_save_docx.setDisabled(False)
             self.pb_save_pdf.setDisabled(False)
-
             self.pb_send_email.setDisabled(False)
-
         else:
             QMessageBox.warning(
                 self,
@@ -281,17 +297,27 @@ class Students(QMainWindow):
         self.dialog.close()       
         """
 
-    def savepdf(self):
-        """Сохранение PDF"""
-        print('Сохранение PDF')
-        """
-        cmd = 'libreoffice --convert-to pdf --outdir'.split() + [outfolder] + [inputfile]
-        p = subprocess.Popen(cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-        p.wait(timeout=10)
-        stdout, stderr = p.communicate()
-        if stderr:
-            raise subprocess.SubprocessError(stderr)
-        """
+    def savepacks(self):
+        """Сохранение пакетов документов"""
+        for s in studs:
+            packdoc_dir = f"Группа {self.context['group']} - Пакеты документов на практику"
+            pdf_dir = f"{self.docdir}/{packdoc_dir}/{s['student']}"
+            # filedoc = f"{self.docdir}/{folder}/{s['student']} - {self.curr_tpl}.docx"
+            # Конвертируем файл DOCX в PDF:
+            # ToPDF(pdf_dir).doc2pdf(filedoc)
+
+    def sendingmail(self):
+        """Отправка писем"""
+        for j in studs:
+            # Формируем список с путями к файлам по ФИО студентов и группе:
+            file_paths = list()
+            for i in tpl_file:
+                tmp = glob.glob(f"{self.docdir}/{self.context['group']} - {i}" + '/' + f"{j['student']}*")
+                if tmp:
+                    file_paths.append(''.join(tmp).replace('\\', '/'))
+            # Передача параметров классу SendLetter, который генерирует и отправляет письма
+            SendLetter(j['mail'], j['student'], file_paths)
+        self.statusBar().showMessage('Письма отправлены')
 
 
 def date_conv(xldate, book):

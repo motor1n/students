@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Students - список студентов</string>
+   <string>Students - шаблоны документов</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -22,7 +22,7 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0" rowspan="2" colspan="2">
+    <item row="0" column="0">
      <widget class="QWidget" name="widget" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -31,86 +31,7 @@
        </sizepolicy>
       </property>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="1">
-        <widget class="QLabel" name="label_02">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <family>Trebuchet MS</family>
-           <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Список студентов:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_01">
-         <property name="maximumSize">
-          <size>
-           <width>402</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Trebuchet MS</family>
-           <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Инструкция:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QTextBrowser" name="tb">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>402</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="html">
-          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Программа &lt;/span&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Students&lt;/span&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt; предназначена для ....&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;1.&lt;/span&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt; Откройте &lt;/span&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;...&lt;/span&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;  → &lt;/span&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Открыть&lt;/span&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;...&lt;/span&gt;&lt;/p&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-size:11pt;&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;???;&lt;/li&gt;
-&lt;li style=&quot; font-size:11pt;&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;???;&lt;/li&gt;
-&lt;li style=&quot; font-size:11pt;&quot; style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;???.&lt;/li&gt;&lt;/ul&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;2.&lt;/span&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt; ???&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;3.&lt;/span&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt; ??? &lt;/span&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;???&lt;/span&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;:&lt;/span&gt;&lt;/p&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-size:11pt;&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;??? &lt;span style=&quot; font-weight:600;&quot;&gt;???&lt;/span&gt;;&lt;/li&gt;&lt;/ul&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-size:11pt;&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;нажмите кнопку &lt;span style=&quot; font-weight:600;&quot;&gt;???&lt;/span&gt;;&lt;/li&gt;&lt;/ul&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-size:11pt;&quot; style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;??? &lt;span style=&quot; font-weight:600;&quot;&gt;???&lt;/span&gt;.&lt;/li&gt;&lt;/ul&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;4.&lt;/span&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt; Сохраните результат → &lt;/span&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Сохранить&lt;/span&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;...&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
+       <item row="10" column="0">
         <widget class="QPushButton" name="pb_save_docx">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -126,14 +47,14 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="font">
           <font>
-           <pointsize>11</pointsize>
+           <pointsize>10</pointsize>
           </font>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Сохранить DOCX...  </string>
+          <string> Сохранить DOCX...  </string>
          </property>
          <property name="icon">
           <iconset>
@@ -147,7 +68,7 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item row="9" column="0">
         <widget class="QPushButton" name="pb_open_xls">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -163,11 +84,11 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="font">
           <font>
-           <pointsize>11</pointsize>
+           <pointsize>10</pointsize>
           </font>
          </property>
          <property name="text">
-          <string>Открыть файл XLS...</string>
+          <string> Открыть файл XLS...</string>
          </property>
          <property name="icon">
           <iconset>
@@ -181,7 +102,54 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
-       <item row="1" column="1" rowspan="5">
+       <item row="12" column="0">
+        <widget class="QPushButton" name="pb_send_email">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>400</width>
+           <height>48</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Отправить E-MAIL...</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>pic/email-icon.png</normaloff>pic/email-icon.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QCheckBox" name="cb_01">
+         <property name="text">
+          <string>Заявление о направлении на практику</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">bg</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="1" column="1" rowspan="12">
         <widget class="QTableWidget" name="tw">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -198,10 +166,10 @@ p, li { white-space: pre-wrap; }
           <bool>false</bool>
          </property>
          <attribute name="horizontalHeaderMinimumSectionSize">
-          <number>180</number>
+          <number>30</number>
          </attribute>
          <attribute name="horizontalHeaderDefaultSectionSize">
-          <number>185</number>
+          <number>180</number>
          </attribute>
          <attribute name="verticalHeaderMinimumSectionSize">
           <number>30</number>
@@ -356,24 +324,477 @@ p, li { white-space: pre-wrap; }
            <string>30</string>
           </property>
          </row>
+         <row>
+          <property name="text">
+           <string>31</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>32</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>33</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>34</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>35</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>36</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>37</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>38</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>39</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>40</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>41</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>42</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>43</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>44</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>45</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>46</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>47</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>48</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>49</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>50</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>51</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>52</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>53</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>54</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>55</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>56</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>57</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>58</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>59</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>60</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>61</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>62</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>63</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>64</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>65</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>66</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>67</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>68</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>69</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>70</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>71</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>72</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>73</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>74</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>75</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>76</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>77</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>78</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>79</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>80</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>81</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>82</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>83</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>84</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>85</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>86</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>87</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>88</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>89</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>90</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>91</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>92</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>93</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>94</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>95</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>96</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>97</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>98</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>99</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>100</string>
+          </property>
+         </row>
          <column>
           <property name="text">
-           <string>Фамилия</string>
+           <string>ФИО</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Имя</string>
+           <string>Курс</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Отчество</string>
+           <string>Группа</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Форма</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Телефон</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>e-mail</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Часы</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Начало</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Конец</string>
           </property>
          </column>
         </widget>
        </item>
-       <item row="4" column="0">
+       <item row="8" column="0">
+        <widget class="QLabel" name="label_04">
+         <property name="maximumSize">
+          <size>
+           <width>402</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Trebuchet MS</family>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Операции с документами:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_03">
+         <property name="maximumSize">
+          <size>
+           <width>402</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Trebuchet MS</family>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Шаблоны документов:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QCheckBox" name="cb_03">
+         <property name="text">
+          <string>Индивидуальное задание на практику</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">bg</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_02">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <family>Trebuchet MS</family>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Список студентов:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="0">
         <widget class="QPushButton" name="pb_save_pdf">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -389,14 +810,14 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="font">
           <font>
-           <pointsize>11</pointsize>
+           <pointsize>10</pointsize>
           </font>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Сохранить PDF...     </string>
+          <string> Сохранить PDF...     </string>
          </property>
          <property name="icon">
           <iconset>
@@ -410,6 +831,84 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_01">
+         <property name="maximumSize">
+          <size>
+           <width>402</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Trebuchet MS</family>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Инструкция:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" rowspan="2">
+        <widget class="QTextBrowser" name="tb">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>402</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="html">
+          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Программа &lt;span style=&quot; font-weight:600;&quot;&gt;Students&lt;/span&gt; предназначена для ....&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;1.&lt;/span&gt; Откройте &lt;span style=&quot; font-weight:600;&quot;&gt;...&lt;/span&gt;  → &lt;span style=&quot; font-weight:600;&quot;&gt;Открыть&lt;/span&gt;...&lt;/p&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot;&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;???;&lt;/li&gt;
+&lt;li style=&quot;&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;???;&lt;/li&gt;
+&lt;li style=&quot;&quot; style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;???.&lt;/li&gt;&lt;/ul&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;2.&lt;/span&gt; ???&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;3.&lt;/span&gt; ??? &lt;span style=&quot; font-weight:600;&quot;&gt;???&lt;/span&gt;:&lt;/p&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot;&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;??? &lt;span style=&quot; font-weight:600;&quot;&gt;???&lt;/span&gt;;&lt;/li&gt;&lt;/ul&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot;&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;нажмите кнопку &lt;span style=&quot; font-weight:600;&quot;&gt;???&lt;/span&gt;;&lt;/li&gt;&lt;/ul&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot;&quot; style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;??? &lt;span style=&quot; font-weight:600;&quot;&gt;???&lt;/span&gt;.&lt;/li&gt;&lt;/ul&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;4.&lt;/span&gt; Сохраните результат → &lt;span style=&quot; font-weight:600;&quot;&gt;Сохранить&lt;/span&gt;...&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QCheckBox" name="cb_02">
+         <property name="text">
+          <string>Рабочий график (план) проведения практики</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">bg</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QCheckBox" name="cb_04">
+         <property name="text">
+          <string>Инструктаж по технике безопасности</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">bg</string>
+         </attribute>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
@@ -419,4 +918,11 @@ p, li { white-space: pre-wrap; }
  </widget>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="bg">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+ </buttongroups>
 </ui>
