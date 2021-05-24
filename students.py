@@ -7,6 +7,7 @@ from PyQt5 import uic
 from datetime import datetime, timedelta
 from sendmail import SendLetter
 from savepdf import ToPDF
+from thread import Thread
 from docxtpl import DocxTemplate
 from PyQt5.QtWidgets import (
     QMessageBox,
@@ -59,8 +60,8 @@ class Students(QMainWindow):
         # Папка сохранения документов DOCX:
         self.docdir = str()
 
-        # Папка сохранения документов PDF:
-        self.pdfdir = str()
+        # Текущая папка сохранения документов PDF для рассылки e-mail:
+        self.curr_packdocs = str()
 
         # Словарь путей сохранённых документов пользователей:
         self.docpaths = dict()
@@ -241,6 +242,7 @@ class Students(QMainWindow):
 
             # Выбираем отмеченные шаблоны:
             self.curr_tpls = {cb.text() for cb in self.bg.buttons() if cb.isChecked()}
+
             # Задаём текущие файлы шаблонов:
             self.curr_files = {tpl_file[tpl] for tpl in self.curr_tpls}
 
@@ -264,8 +266,21 @@ class Students(QMainWindow):
                     doc.render(s)
                     doc.save(filedoc)
 
-                #
-                print(self.docpaths)
+                    """
+                    # Создаём поток thread1 и передаём туда имя файла и данные для рендеринга:
+                    self.thread = Thread(fname, context)
+                    # Сигнал запуска потока hread1 отправляем на слот thread1_start:
+                    self.thread.started.connect(self.thread1_start)
+                    # Сигнал завершения потока thread1 отправляем на слот thread1_stop:
+                    self.thread.finished.connect(self.thread1_stop)
+                    # Qt.QueuedConnection - сигнал помещается в очередь обработки событий интерфейса Qt:
+                    self.thread.signal.connect(self.thread1_process, Qt.QueuedConnection)
+                    # Делаем кнопки неактивными:
+                    self.pb_lrn.setDisabled(True)
+                    self.pb_save.setDisabled(True)
+                    # Запускаем поток рендеринга:
+                    self.thread.start(priority=QThread.IdlePriority)
+                    """
 
             if not self.save_error:
                 # Выводим информационное сообщение:
@@ -277,7 +292,6 @@ class Students(QMainWindow):
             self.pb_open_xls.setDisabled(False)
             self.pb_save_docx.setDisabled(False)
             self.pb_save_pdf.setDisabled(False)
-            self.pb_send_email.setDisabled(False)
         else:
             QMessageBox.warning(
                 self,
@@ -285,47 +299,39 @@ class Students(QMainWindow):
                 '<h4>Вы не выбрали папку<br>для сохранения.</h4>'
             )
 
-        """
-            # Выводим окно QProgressDialog на ожидание рендеринга.
-            # HTML-сообщение с иконкой:
-            self.save_error = False
-            msg = '<table border = "0"> <tbody> <tr>' \
-                  '<td> <img src = "pic/save-icon.png"> </td>' \
-                  '<td> <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Идёт сохранение документа,<br>' \
-                  '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;подождите пожалуйста.</h4> </td>'
-            self.dialog = QProgressDialog(msg, None, 0, 0, self)
-            self.dialog.setModal(True)
-            self.dialog.setWindowTitle('Инфо')
-            self.dialog.setRange(0, 0)
-            self.dialog.show()
-        
-        if s == 'error':
-            self.dialog.close()
-            self.save_error = True
-            msg = QMessageBox.warning(self, 'Внимание!',
-                                      '<h4>Не удалось сохранить файл.<br>'
-                                      'Возможно, у вас нет доступа<br>к целевой папке.</h4>')
-            self.statusBar().showMessage('Не удалось создать файл')
-            
-        self.dialog.close()       
-        """
-
     def savepacks(self):
         """Сохранение пакетов PDF-документов"""
 
-        # Окно диалога выбора папки для сохранения файлов:
-        self.pdfdir = QFileDialog.getExistingDirectory(self, 'Выбрать папку', '.')
+        # Окно диалога выбора папки для сохранения пакетов документов:
+        pdfdir = QFileDialog.getExistingDirectory(self, 'Выбрать папку', '.')
 
-        for s in studs:
-            packdoc_dir = f"Группа {self.context['group']} - Пакеты документов на практику"
-            packs_dir = f"{self.pdfdir}/{packdoc_dir}/{s['student']}"
+        # Папка для пакетов документов текущей группы:
+        packdoc_dir = f"Группа {self.context['group']} - Пакеты документов на практику"
 
-        for key, value in self.docpaths.items():
-            print(key, value)
+        # Текущая папка сохранения пакетов документов,
+        # из которой будут рассылаться электронные письма:
+        self.curr_packdocs = f'{pdfdir}/{packdoc_dir}'
 
-            # filedoc = f"{self.docdir}/{folder}/{s['student']} - {self.curr_tpl}.docx"
-            # Конвертируем файл DOCX в PDF:
-            # ToPDF(pdf_dir).doc2pdf(filedoc)
+        self.statusBar().showMessage('Идёт формирование пакетов документов...')
+
+        # Просматриваем все пути исходных DOCX-файлов по каждому студенту:
+        for student, doc_files in self.docpaths.items():
+
+            # Конвертируем DOCX-файлы
+            # каждого студента в отдельную папку:
+            for file in doc_files:
+                # Папка для студента /Фамилия Имя Отчество - Пакет документов на практику:
+                folder = f"{self.curr_packdocs}/{student} - Пакет документов на практику"
+
+                # Конвертация DOCX -> PDF. Исходные файлы остаются без изменений.
+                # file - путь к документу DOCX, который надо конвертировать:
+                ToPDF(folder).doc2pdf(file)
+
+        msg = QMessageBox.information(self, 'Инфо',
+                                      '<h4>Пакеты документов сформированы.</h4>')
+        self.statusBar().showMessage('Пакеты документов сформированы')
+        # Делаем кнопку отправки e-mail активной:
+        self.pb_send_email.setDisabled(False)
 
     @staticmethod
     def sendingmail():
@@ -335,6 +341,32 @@ class Students(QMainWindow):
             # SendLetter(i['mail'], i['student'], 'students.xls')
         # Передача параметров классу SendLetter, который генерирует и отправляет письма
         # SendLetter('chmferks@gmail.com', 'student fio', 'students.xls')
+
+    def progress(self):
+        pass
+        # Выводим окно QProgressDialog на ожидание рендеринга.
+        # HTML-сообщение с иконкой:
+        #self.save_error = False
+        msg = '<table border = "0"> <tbody> <tr>' \
+              '<td> <img src = "pic/save-icon.png"> </td>' \
+              '<td> <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Идёт сохранение документа,<br>' \
+              '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;подождите пожалуйста.</h4> </td>'
+        self.dialog = QProgressDialog(msg, None, 0, 0, self)
+        self.dialog.setModal(True)
+        self.dialog.setWindowTitle('Инфо')
+        self.dialog.setRange(0, 0)
+        self.dialog.show()
+
+        """
+        if s == 'error':
+            self.dialog.close()
+            self.save_error = True
+            msg = QMessageBox.warning(self, 'Внимание!',
+                                      '<h4>Не удалось сохранить файл.<br>'
+                                      'Возможно, у вас нет доступа<br>к целевой папке.</h4>')
+            self.statusBar().showMessage('Не удалось создать файл')
+        """
+        # self.dialog.close()
 
 
 def date_conv(xldate, book):
