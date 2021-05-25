@@ -1,14 +1,13 @@
 """Students 0.8.1"""
 
-import os
 import sys
 import xlrd
 from PyQt5 import uic
-from datetime import datetime, timedelta
+from datetime import datetime
+from PyQt5.QtCore import Qt
 from sendmail import SendLetter
-from savepdf import ToPDF
-from thread import Thread
-from docxtpl import DocxTemplate
+from thread import ThreadPDF, ThreadDOCX
+from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import (
     QMessageBox,
     QApplication,
@@ -66,6 +65,12 @@ class Students(QMainWindow):
         # Словарь путей сохранённых документов пользователей:
         self.docpaths = dict()
 
+        # Сообщение о результате операции:
+        self.msg = str()
+
+        # Максимальное значение QProgressDialog:
+        self.max_value = 0
+
         # Кнопки pb_save_docx и pb_save_pdf дезактивированы,
         # поскольку на данный момент ещё ничего не сделано:
         self.pb_open_xls.setDisabled(True)
@@ -73,7 +78,7 @@ class Students(QMainWindow):
         self.pb_save_pdf.setDisabled(True)
         self.pb_send_email.setDisabled(True)
 
-        # Группа Сигнал отслеживания изменения CheckBox при выборе типа шаблона:
+        # Группа кнопок для сигнала отслеживания изменения CheckBox при выборе типа шаблона:
         self.bg.buttonClicked.connect(self.tpl_select)
 
         # Открыть файл XLS. Сигнал pb_open_xls --> слот open_xls:
@@ -101,10 +106,10 @@ class Students(QMainWindow):
                 self.pb_save_docx.setDisabled(False)
                 msg = 'Сохраните файл в формате DOCX'
                 self.statusBar().showMessage(msg)
+
             # Выбираем отмеченные шаблоны:
             self.curr_tpls = {cb.text() for cb in self.bg.buttons() if cb.isChecked()}
-            # Задаём текущие файлы шаблонов:
-            self.curr_files = {tpl_file[tpl] for tpl in self.curr_tpls}
+
             # Если тип шаблона выбран, активируем кнопку "Открыть файл XLS..."
             self.pb_open_xls.setDisabled(False)
             if self.fileopen:
@@ -118,7 +123,7 @@ class Students(QMainWindow):
             self.pb_save_docx.setDisabled(True)
             self.pb_save_pdf.setDisabled(True)
             self.pb_send_email.setDisabled(True)
-            msg = 'Выберите шаблон документа.'
+            msg = 'Выберите шаблоны документов.'
             self.statusBar().showMessage(msg)
 
     def open_xls(self):
@@ -197,18 +202,6 @@ class Students(QMainWindow):
                 # Автоподбор ширины столбцов:
                 self.tw.resizeColumnsToContents()
 
-                # Создаём папку для студента:
-                """
-                try:
-                    os.makedirs(f'dir/{curr_student}')
-                except FileExistsError as error:
-                    QMessageBox.information(
-                        self,
-                        'Инфо',
-                        f'<h4>Студент:<br>{curr_student}<br>'
-                        f'<br>Папка для этого студента уже имеется.</h4>'
-                    )
-                """
             # Флаг: файл открыт
             self.fileopen = True
 
@@ -230,9 +223,16 @@ class Students(QMainWindow):
 
     def savedocx(self):
         """Сохранение DOCX"""
-
         # Окно диалога выбора папки для сохранения файлов:
         self.docdir = QFileDialog.getExistingDirectory(self, 'Выбрать папку', '.')
+
+        self.msg = '<table border = "0"> <tbody> <tr>' \
+                   '<td> <img src = "pic/save-icon.png"> </td>' \
+                   '<td> <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Идёт процесс формирование документов,' \
+                   '<br>' \
+                   '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;подождите пожалуйста.</h4> </td>'
+
+        self.max_value = len(studs) * len(self.curr_tpls)
 
         if self.docdir != str():
             self.statusBar().showMessage('Идёт процесс формирование документов...')
@@ -243,50 +243,26 @@ class Students(QMainWindow):
             # Выбираем отмеченные шаблоны:
             self.curr_tpls = {cb.text() for cb in self.bg.buttons() if cb.isChecked()}
 
-            # Задаём текущие файлы шаблонов:
-            self.curr_files = {tpl_file[tpl] for tpl in self.curr_tpls}
+            self.thread1 = ThreadDOCX(
+                studs,
+                tpl_file,
+                self.curr_tpls,
+                self.context,
+                self.docdir,
+                self.docpaths
+            )
 
-            for curr_tpl in self.curr_tpls:
-                # Задаём папку для группы с названием шаблона:
-                folder = f"{self.context['group']} - {curr_tpl}"
-                if not os.path.isdir(f'{self.docdir}/{folder}'):
-                    os.mkdir(f'{self.docdir}/{folder}')
-                print('============================')
-                # Создаём документы для всех студентов группы:
-                for s in studs:
-                    filedoc = f"{self.docdir}/{folder}/{s['student']} - {curr_tpl}.docx"
-                    print(filedoc)
+            # Сигнал запуска потока thread отправляем на слот thread_start:
+            self.thread1.started.connect(self.thread_start)
 
-                    if s['student'] in self.docpaths:
-                        self.docpaths[s['student']] = self.docpaths[s['student']] + [filedoc]
-                    else:
-                        self.docpaths[s['student']] = [filedoc]
+            # Qt.QueuedConnection - сигнал помещается в очередь обработки событий интерфейса Qt:
+            self.thread1.signal.connect(self.thread_process, Qt.QueuedConnection)
 
-                    doc = DocxTemplate(f'tpl/{tpl_file[curr_tpl]}')
-                    doc.render(s)
-                    doc.save(filedoc)
+            # Сигнал завершения потока thread отправляем на слот thread_stop:
+            self.thread1.finished.connect(self.thread_stop)
 
-                    """
-                    # Создаём поток thread1 и передаём туда имя файла и данные для рендеринга:
-                    self.thread = Thread(fname, context)
-                    # Сигнал запуска потока hread1 отправляем на слот thread1_start:
-                    self.thread.started.connect(self.thread1_start)
-                    # Сигнал завершения потока thread1 отправляем на слот thread1_stop:
-                    self.thread.finished.connect(self.thread1_stop)
-                    # Qt.QueuedConnection - сигнал помещается в очередь обработки событий интерфейса Qt:
-                    self.thread.signal.connect(self.thread1_process, Qt.QueuedConnection)
-                    # Делаем кнопки неактивными:
-                    self.pb_lrn.setDisabled(True)
-                    self.pb_save.setDisabled(True)
-                    # Запускаем поток рендеринга:
-                    self.thread.start(priority=QThread.IdlePriority)
-                    """
-
-            if not self.save_error:
-                # Выводим информационное сообщение:
-                msg = QMessageBox.information(self, 'Инфо',
-                                              '<h4>Документы сохранены.</h4>')
-                self.statusBar().showMessage('Документы сохранены')
+            # Запускаем поток рендеринга:
+            self.thread1.start(priority=QThread.IdlePriority)
 
             # Делаем кнопки активными:
             self.pb_open_xls.setDisabled(False)
@@ -301,7 +277,6 @@ class Students(QMainWindow):
 
     def savepacks(self):
         """Сохранение пакетов PDF-документов"""
-
         # Окно диалога выбора папки для сохранения пакетов документов:
         pdfdir = QFileDialog.getExistingDirectory(self, 'Выбрать папку', '.')
 
@@ -314,22 +289,28 @@ class Students(QMainWindow):
 
         self.statusBar().showMessage('Идёт формирование пакетов документов...')
 
-        # Просматриваем все пути исходных DOCX-файлов по каждому студенту:
-        for student, doc_files in self.docpaths.items():
+        self.msg = '<table border = "0"> <tbody> <tr>' \
+                   '<td> <img src = "pic/save-icon.png"> </td>' \
+                   '<td> <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Идёт формирование пакетов документов,' \
+                   '<br>' \
+                   '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;подождите пожалуйста.</h4> </td>'
 
-            # Конвертируем DOCX-файлы
-            # каждого студента в отдельную папку:
-            for file in doc_files:
-                # Папка для студента /Фамилия Имя Отчество - Пакет документов на практику:
-                folder = f"{self.curr_packdocs}/{student} - Пакет документов на практику"
+        self.max_value = len(self.docpaths)
 
-                # Конвертация DOCX -> PDF. Исходные файлы остаются без изменений.
-                # file - путь к документу DOCX, который надо конвертировать:
-                ToPDF(folder).doc2pdf(file)
+        self.thread2 = ThreadPDF(self.docpaths.items(), self.curr_packdocs)
 
-        msg = QMessageBox.information(self, 'Инфо',
-                                      '<h4>Пакеты документов сформированы.</h4>')
-        self.statusBar().showMessage('Пакеты документов сформированы')
+        # Сигнал запуска потока thread отправляем на слот thread_start:
+        self.thread2.started.connect(self.thread_start)
+
+        # Qt.QueuedConnection - сигнал помещается в очередь обработки событий интерфейса Qt:
+        self.thread2.signal.connect(self.thread_process, Qt.QueuedConnection)
+
+        # Сигнал завершения потока thread отправляем на слот thread_stop:
+        self.thread2.finished.connect(self.thread_stop)
+
+        # Запускаем поток рендеринга:
+        self.thread2.start(priority=QThread.IdlePriority)
+
         # Делаем кнопку отправки e-mail активной:
         self.pb_send_email.setDisabled(False)
 
@@ -342,31 +323,37 @@ class Students(QMainWindow):
         # Передача параметров классу SendLetter, который генерирует и отправляет письма
         # SendLetter('chmferks@gmail.com', 'student fio', 'students.xls')
 
-    def progress(self):
-        pass
-        # Выводим окно QProgressDialog на ожидание рендеринга.
-        # HTML-сообщение с иконкой:
-        #self.save_error = False
-        msg = '<table border = "0"> <tbody> <tr>' \
-              '<td> <img src = "pic/save-icon.png"> </td>' \
-              '<td> <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Идёт сохранение документа,<br>' \
-              '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;подождите пожалуйста.</h4> </td>'
-        self.dialog = QProgressDialog(msg, None, 0, 0, self)
+    def thread_start(self):
+        """Вызывается при событии запуска потока"""
+        self.dialog = QProgressDialog(self.msg, None, 0, 0, self)
         self.dialog.setModal(True)
         self.dialog.setWindowTitle('Инфо')
-        self.dialog.setRange(0, 0)
+        self.dialog.setRange(0, self.max_value)
         self.dialog.show()
 
-        """
-        if s == 'error':
+    def thread_process(self, val):
+        """Вызывается сигналами которые отправляет поток"""
+        # Параметр val - это сигнал полученный из потока thread
+        if val == 'error':
             self.dialog.close()
             self.save_error = True
             msg = QMessageBox.warning(self, 'Внимание!',
-                                      '<h4>Не удалось сохранить файл.<br>'
-                                      'Возможно, у вас нет доступа<br>к целевой папке.</h4>')
-            self.statusBar().showMessage('Не удалось создать файл')
-        """
-        # self.dialog.close()
+                                      '<h4>Ошибка выполнеия операции.</h4>')
+            self.statusBar().showMessage('Ошибка выполнения операции')
+        else:
+            # Изменение процента выполнения процесса:
+            self.dialog.setValue(val)
+
+    def thread_stop(self):
+        """Вызывается при событии завершения потока"""
+        self.dialog.close()
+        # Выводим информационное сообщение:
+        msg = QMessageBox.information(
+            self,
+            'Инфо',
+            '<h4>Операция успешно завершена.</h4>'
+        )
+        self.statusBar().showMessage('Операция успешно завершена.')
 
 
 def date_conv(xldate, book):

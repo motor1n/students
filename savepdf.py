@@ -9,8 +9,6 @@ class ToPDF:
         # Путь для сконвертированных файлов
         self.path = path
 
-        print(self.path)
-
     def doc2pdf(self, doc):
         """
         Конвертация в OS Windows
@@ -44,11 +42,10 @@ class ToPDF:
         """
         # cmd = 'libreoffice --convert-to pdf'.split() + [doc]
         cmd = 'libreoffice --headless --convert-to pdf'.split() + [doc, '--outdir', self.path]
-        print(cmd)
-        # libreoffice --headless --convert-to pdf test.docx --outdir /pdf
         p = subprocess.Popen(cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
         p.wait(timeout=10)
-
-        # stdout, stderr = p.communicate()
-        # if stderr:
-        #    raise subprocess.SubprocessError(stderr)
+        """
+        stdout, stderr = p.communicate()
+        if stderr:
+            raise subprocess.SubprocessError(stderr)
+        """
