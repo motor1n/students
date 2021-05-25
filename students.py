@@ -1,4 +1,4 @@
-"""Students 0.8.1"""
+"""Students 0.8.2"""
 
 import sys
 import xlrd
