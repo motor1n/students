@@ -1,4 +1,4 @@
-"""Student Practice 0.8.5"""
+"""Student Practice 0.8.9"""
 
 import sys
 import xlrd
@@ -171,7 +171,7 @@ class Students(QMainWindow):
                     'forms': row[3],
                     'phone': row[4],
                     'mail': row[5],
-                    'hh': row[6],
+                    'hh': int(row[6]),
                     'date': date_conv(row[7], workbook),
                     'date1': date_conv(row[8], workbook),
                     'date2': date_conv(row[9], workbook),
@@ -180,7 +180,7 @@ class Students(QMainWindow):
                     'location': row[12],
                     'address': row[13],
                     'teacher': row[14],
-                    'yy': row[15],
+                    'yy': int(row[15]),
                     'date3': date_conv(row[16], workbook),
                     'date4': date_conv(row[17], workbook),
                     'date5': date_conv(row[18], workbook),
@@ -194,10 +194,14 @@ class Students(QMainWindow):
                 # Помещаем словарь (данные по студенту) в глобальный список studs:
                 studs.append(self.context)
 
-                # Выводим фамилию, имя, отчество
+                # Выводим исходные данные
                 # в таблицу "Список студентов" графического интерфейса:
-                for j in range(5):
-                    self.tw.setItem(i - 2, j, QTableWidgetItem(row[j]))
+                column = 0
+                for value in self.context.values():
+                    if column > 23:
+                        break
+                    self.tw.setItem(i - 2, column, QTableWidgetItem(str(value)))
+                    column += 1
 
                 # Автоподбор ширины столбцов:
                 self.tw.resizeColumnsToContents()
