@@ -1,4 +1,4 @@
-"""Students 0.8.2"""
+"""Student Practice 0.8.5"""
 
 import sys
 import xlrd
