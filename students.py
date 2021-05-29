@@ -1,5 +1,7 @@
 """Student Practice 0.8.9"""
-
+import glob
+import os
+from zipfile import ZipFile
 import sys
 import xlrd
 from PyQt5 import uic
@@ -16,7 +18,6 @@ from PyQt5.QtWidgets import (
     QTableWidgetItem,
     QProgressDialog
 )
-
 
 # Глобальный спиcок студентов. Данные по каждому студенту считываются из файла XLS в словарь.
 # Одна строка таблицы - это один студент, данные по которому образуют один словарь.
@@ -318,14 +319,21 @@ class Students(QMainWindow):
         # Делаем кнопку отправки e-mail активной:
         self.pb_send_email.setDisabled(False)
 
-    @staticmethod
-    def sendingmail():
+    def sendingmail(self):
         """Отправка писем"""
-        for i in studs:
-            print(i['mail'])
-            # SendLetter(i['mail'], i['student'], 'students.xls')
-        # Передача параметров классу SendLetter, который генерирует и отправляет письма
-        # SendLetter('chmferks@gmail.com', 'student fio', 'students.xls')
+        for j in studs:
+            # Формируем список с путями к файлам по ФИО студентов и группе:
+            tmp = glob.glob(f"{self.curr_packdocs}/{j['student']}*")
+            # Создаем zip-файл со всеми pdf файлами студента:
+            with ZipFile(j['student'] + ' - Пакеты документов на практику' + '.zip', 'w') as zipobj:
+                for foldername, subfolders, filenames in os.walk(''.join(tmp).replace('\\', '/')):
+                    for filename in filenames:
+                        filepath = os.path.join(foldername, filename)
+                        zipobj.write(filepath, os.path.basename(filepath))
+            # Передача параметров классу SendLetter, который генерирует и отправляет письма
+            SendLetter(j['mail'], j['student'], ''.join(glob.glob(f'{j["student"]} - Пакеты документов на практику.zip')))
+            os.remove(j['student'] + ' - Пакеты документов на практику' + '.zip')
+        self.statusBar().showMessage('Письма отправлены')
 
     def thread_start(self):
         """Вызывается при событии запуска потока"""
