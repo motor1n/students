@@ -18,17 +18,21 @@ class ThreadDOCX(QThread):
         self.studs, self.tplfile, self.curr_tpls, self.context, self.docdir, self.docpaths = args
 
     def run(self):
+        # Задаём папку для пакетов документов группы:
+        folder = f"Группа {self.context['group']} - Пакеты документов на практику - DOCX"
+        if not os.path.isdir(f'{self.docdir}/{folder}'):
+            os.mkdir(f'{self.docdir}/{folder}')
         # Просматриваем все пути исходных DOCX-файлов по каждому студенту:
         i = 0  # Счётчик обработанных пакетов документов
-        for curr_tpl in self.curr_tpls:
-            # Задаём папку для группы с названием шаблона:
-            folder = f"{self.context['group']} - {curr_tpl}"
-            if not os.path.isdir(f'{self.docdir}/{folder}'):
-                os.mkdir(f'{self.docdir}/{folder}')
-            # Создаём документы для всех студентов группы:
-            for s in self.studs:
-                filedoc = f"{self.docdir}/{folder}/{s['student']} - {curr_tpl}.docx"
-
+        # Создаём документы для всех студентов группы:
+        for s in self.studs:
+            # Создаём папку для студента:
+            studir = f"{self.docdir}/{folder}/{s['student']} - Пакет документов на практику"
+            if not os.path.isdir(studir):
+                os.mkdir(studir)
+            # Пробегаем по выбранным для генерации шаблонам:
+            for curr_tpl in self.curr_tpls:
+                filedoc = f"{studir}/{s['student']} - {curr_tpl}.docx"
                 if s['student'] in self.docpaths:
                     self.docpaths[s['student']] = self.docpaths[s['student']] + [filedoc]
                 else:
