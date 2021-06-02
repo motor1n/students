@@ -33,7 +33,7 @@ class ToPDF:
             os.makedirs(self.dir_to_conv)
 
         try:
-            # Коныертация и сохранение:
+            # Конвертация и сохранение:
             word = client.CreateObject('Word.Application')
             worddoc = word.Documents.Open(doc)
             worddoc.SaveAs(f'{self.dir_to_conv}/{filename}', FileFormat=17)
