@@ -2,7 +2,6 @@
 
 import os
 import glob
-from zipfile import ZipFile
 from savepdf import ToPDF
 from docxtpl import DocxTemplate
 from sendmail import SendLetter
@@ -91,25 +90,15 @@ class ThreadMAIL(QThread):
     def run(self):
         i = 0  # Счётчик отправленных писем
         for stud in self.studs:
-            # Формируем список с путями к файлам по ФИО студентов и группе:
-            tmp = glob.glob(f"{self.curr_packdocs}/{stud['student']}*")
-            # Создаем zip-файл со всеми pdf файлами студента:
-            with ZipFile(
-                    stud['student'] + ' - Пакеты документов на практику' + '.zip',
-                    'w'
-            ) as zipobj:
-                for foldername, subfolders, filenames in os.walk(''.join(tmp).replace('\\', '/')):
-                    for filename in filenames:
-                        filepath = os.path.join(foldername, filename)
-                        zipobj.write(filepath, os.path.basename(filepath))
-            # Передача параметров классу SendLetter, который генерирует и отправляет письма:
-            SendLetter(
+            # Передача параметров классу SendLetter,
+            # который генерирует и отправляет письма:
+            email_message = SendLetter(
                 stud['mail'],
                 stud['student'],
-                ''.join(glob.glob(f'{stud["student"]} - Пакеты документов на практику.zip'))
+                glob.glob(f"{self.curr_packdocs}/{stud['student']}*")
             )
-            # Удаление отправленного файла:
-            os.remove(stud['student'] + ' - Пакеты документов на практику' + '.zip')
+            # Отправка сообщения:
+            email_message.send_email()
             i += 1  # Увеличиваем счётчик
             # Отправляем значение счётчика в основную программу:
             self.signal.emit(i)
