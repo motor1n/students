@@ -1,4 +1,4 @@
-"""Student Practice 0.9.5"""
+"""Student Practice 0.9.7"""
 
 import sys
 import xlrd
@@ -343,7 +343,7 @@ class Students(QMainWindow):
         # Запускаем поток рендеринга:
         self.thread3.start(priority=QThread.IdlePriority)
 
-        self.statusBar().showMessage('Письма отправлены')
+        self.statusBar().showMessage('Отправка писем...')
 
     def thread_start(self):
         """Вызывается при событии запуска потока"""
