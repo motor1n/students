@@ -1,8 +1,11 @@
 """Потоки для отображения прогресса операций"""
 
 import os
+import glob
+from zipfile import ZipFile
 from savepdf import ToPDF
 from docxtpl import DocxTemplate
+from sendmail import SendLetter
 from PyQt5.QtCore import QThread, pyqtSignal
 
 
@@ -83,22 +86,30 @@ class ThreadMAIL(QThread):
     def __init__(self, *args, parent=None):
         """Инициализация потока"""
         QThread.__init__(self, parent)
+        self.studs, self.curr_packdocs = args
 
     def run(self):
-        pass
-        """
-        # Просматриваем все пути исходных DOCX-файлов по каждому студенту:
-        i = 0  # Счётчик обработанных пакетов документов
-        for student, doc_files in self.docpaths:
-            # Конвертируем DOCX-файлы
-            # каждого студента в отдельную папку:
-            for file in doc_files:
-                # Папка для студента /Фамилия Имя Отчество - Пакет документов на практику:
-                folder = f"{self.curr_packdocs}/{student} - Пакет документов на практику"
-                # Конвертация DOCX -> PDF. Исходные файлы остаются без изменений.
-                # file - путь к документу DOCX, который надо конвертировать:
-                ToPDF(folder).doc2pdf(file)
+        i = 0  # Счётчик отправленных писем
+        for stud in self.studs:
+            # Формируем список с путями к файлам по ФИО студентов и группе:
+            tmp = glob.glob(f"{self.curr_packdocs}/{stud['student']}*")
+            # Создаем zip-файл со всеми pdf файлами студента:
+            with ZipFile(
+                    stud['student'] + ' - Пакеты документов на практику' + '.zip',
+                    'w'
+            ) as zipobj:
+                for foldername, subfolders, filenames in os.walk(''.join(tmp).replace('\\', '/')):
+                    for filename in filenames:
+                        filepath = os.path.join(foldername, filename)
+                        zipobj.write(filepath, os.path.basename(filepath))
+            # Передача параметров классу SendLetter, который генерирует и отправляет письма:
+            SendLetter(
+                stud['mail'],
+                stud['student'],
+                ''.join(glob.glob(f'{stud["student"]} - Пакеты документов на практику.zip'))
+            )
+            # Удаление отправленного файла:
+            os.remove(stud['student'] + ' - Пакеты документов на практику' + '.zip')
             i += 1  # Увеличиваем счётчик
             # Отправляем значение счётчика в основную программу:
             self.signal.emit(i)
-        """

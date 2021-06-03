@@ -1,15 +1,11 @@
-"""Student Practice 0.9.1"""
+"""Student Practice 0.9.3"""
 
-import os
 import sys
 import xlrd
-import glob
-from zipfile import ZipFile
 from PyQt5 import uic
 from datetime import datetime
 from PyQt5.QtCore import Qt
-from sendmail import SendLetter
-from thread import ThreadPDF, ThreadDOCX
+from thread import (ThreadPDF, ThreadDOCX, ThreadMAIL)
 from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import (
     QMessageBox,
@@ -319,32 +315,34 @@ class Students(QMainWindow):
         self.thread2.start(priority=QThread.IdlePriority)
 
         # Делаем кнопку отправки e-mail активной:
-        # self.pb_send_email.setDisabled(False)
+        self.pb_send_email.setDisabled(False)
 
     def sendingmail(self):
         """Отправка писем"""
-        self.statusBar().showMessage('Идёт рассылка электронных писем')
-        for stud in studs:
-            # Формируем список с путями к файлам по ФИО студентов и группе:
-            tmp = glob.glob(f"{self.curr_packdocs}/{stud['student']}*")
-            print(tmp)
-            # Создаем zip-файл со всеми pdf файлами студента:
-            with ZipFile(
-                    stud['student'] + ' - Пакеты документов на практику' + '.zip',
-                    'w'
-            ) as zipobj:
-                for foldername, subfolders, filenames in os.walk(''.join(tmp).replace('\\', '/')):
-                    for filename in filenames:
-                        filepath = os.path.join(foldername, filename)
-                        zipobj.write(filepath, os.path.basename(filepath))
-            # Передача параметров классу SendLetter, который генерирует и отправляет письма:
-            SendLetter(
-                stud['mail'],
-                stud['student'],
-                ''.join(glob.glob(f'{stud["student"]} - Пакеты документов на практику.zip'))
-            )
-            # Удаление отправленного файла:
-            os.remove(stud['student'] + ' - Пакеты документов на практику' + '.zip')
+        self.statusBar().showMessage('Идёт рассылка электронных писем...')
+
+        self.msg = '<table border = "0"> <tbody> <tr>' \
+                   '<td> <img src = "pic/email-icon.png"> </td>' \
+                   '<td> <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Идёт отправка элетронных писем,' \
+                   '<br>' \
+                   '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;подождите пожалуйста.</h4> </td>'
+
+        self.max_value = len(studs)
+
+        self.thread3 = ThreadMAIL(studs, self.curr_packdocs)
+
+        # Сигнал запуска потока thread отправляем на слот thread_start:
+        self.thread3.started.connect(self.thread_start)
+
+        # Qt.QueuedConnection - сигнал помещается в очередь обработки событий интерфейса Qt:
+        self.thread3.signal.connect(self.thread_process, Qt.QueuedConnection)
+
+        # Сигнал завершения потока thread отправляем на слот thread_stop:
+        self.thread3.finished.connect(self.thread_stop)
+
+        # Запускаем поток рендеринга:
+        self.thread3.start(priority=QThread.IdlePriority)
+
         self.statusBar().showMessage('Письма отправлены')
 
     def thread_start(self):

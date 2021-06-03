@@ -9,13 +9,15 @@ from email.mime.application import MIMEApplication
 class SendLetter:
     def __init__(self, mail_name, student_name, filepath):
         self.recipient = mail_name
+        # Оставляем только 'Имя Отчество':
+        self.student_name = student_name.partition(' ')[-1]
         self.sender = 'studentpractic.sgugit@gmail.com'
         self.password = 'vkr-2021'
         self.server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-        self.subject = 'СГУГиТ - Пакет документов к производственной практике'
-        self.text = f'Уважаемый(ая) {student_name}!\n' \
-                    f'Вы получили пакет сформированных документов,' \
-                    f'который необходимо приложить к отчетной документации' \
+        self.subject = 'СГУГиТ - Пакет документов к учебной практике'
+        self.text = f'Здравствуйте, <b>{self.student_name}</b>!<br>' \
+                    f'Данное письмо содержит пакет документов, ' \
+                    f'который необходимо приложить к отчетной документации ' \
                     f'по прохождению учебной практики.'
         self.html = '<html><head></head><body><p>' + self.text + '</p></body></html>'
         self.filepath = filepath
