@@ -149,7 +149,14 @@ class Students(QMainWindow):
 
         try:
             # Открываем книгу XLS
-            workbook = xlrd.open_workbook(fname)
+            try:
+                workbook = xlrd.open_workbook(fname)
+            except xlrd.biffh.XLRDError:
+                message = 'Неправильный формат файла'
+                QMessageBox.information(self, 'Инфо', message)
+                self.pb_save_docx.setDisabled(True)
+                self.pb_save_pdf.setDisabled(True)
+                self.pb_send_email.setDisabled(True)
 
             # Читаем первый лист:
             sh = workbook.sheet_by_index(0)
@@ -209,9 +216,12 @@ class Students(QMainWindow):
             self.fileopen = True
 
             # Сообщение: файл открыт
-            msg = QMessageBox.information(self, 'Инфо',
-                                          '<h4>Файл со списком студентов открыт.'
-                                          '<br>Можно продолжить дальнейшую работу.</h4>')
+            QMessageBox.information(
+                self,
+                'Инфо',
+                '<h4>Файл со списком студентов открыт.'
+                '<br>Можно продолжить дальнейшую работу.</h4>'
+            )
             self.statusBar().showMessage('Сохраните документы в формате DOCX')
             self.pb_save_docx.setDisabled(False)
 
@@ -231,14 +241,14 @@ class Students(QMainWindow):
 
         self.msg = '<table border = "0"> <tbody> <tr>' \
                    '<td> <img src = "pic/save-icon.png"> </td>' \
-                   '<td> <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Идёт процесс формирование документов,' \
+                   '<td> <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Идёт процесс формирования документов,' \
                    '<br>' \
                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;подождите пожалуйста.</h4> </td>'
 
         self.max_value = len(studs) * len(self.curr_tpls)
 
         if self.docdir != str():
-            self.statusBar().showMessage('Идёт процесс формирование документов...')
+            self.statusBar().showMessage('Идёт процесс формирования документов...')
             # Делаем кнопки неактивными:
             self.pb_open_xls.setDisabled(True)
             self.pb_save_docx.setDisabled(True)
@@ -323,7 +333,7 @@ class Students(QMainWindow):
 
         self.msg = '<table border = "0"> <tbody> <tr>' \
                    '<td> <img src = "pic/email-icon.png"> </td>' \
-                   '<td> <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Идёт отправка элетронных писем,' \
+                   '<td> <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Идёт отправка электронных писем,' \
                    '<br>' \
                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;подождите пожалуйста.</h4> </td>'
 
