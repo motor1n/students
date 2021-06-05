@@ -51,7 +51,7 @@ class SendLetter:
         msg.attach(self.part_html)
         # Добавляем в сообщение все файлы:
         process_attachement(msg, self.files_path)
-        # Создаем объект SMTP
+        # Создаём объект для работы с SMTP-сервером:
         server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
         # Включаем режим отладки, если надо:
         # server.set_debuglevel(True)
@@ -74,7 +74,7 @@ def process_attachement(msg, attach_path):
         if os.path.isfile(f):
             # Добавляем файл к сообщению:
             attach_file(msg, f)
-        # Если путь не файл и существует, значит - папка:
+        # Если путь - не файл и существует, значит - папка:
         elif os.path.exists(f):
             # Получаем список файлов в папке:
             dir_list = os.listdir(f)
@@ -129,5 +129,5 @@ def attach_file(msg, filepath):
         'attachment',
         filename=filename
     )
-    # Присоединяем файл к сообщению
+    # Присоединяем файл к сообщению:
     msg.attach(file)

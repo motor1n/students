@@ -1,0 +1,11 @@
+python==3.9.5
+comtypes==1.1.10
+docxtpl==0.11.5
+Jinja2==2.11.3
+lxml==4.6.3
+MarkupSafe==1.1.1
+PyQt5==5.15.4
+python-docx==0.8.10
+setuptools==56.2.0
+six==1.16.0
+xlrd==2.0.1
